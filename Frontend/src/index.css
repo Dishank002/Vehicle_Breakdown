@@ -1,0 +1,209 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* Main container */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 1rem;
+}
+
+/* Card */
+.card {
+  background: #020617;
+  padding: 2rem 2.5rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  max-width: 520px;
+  width: 100%;
+}
+
+/* Title & subtitle */
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  margin-bottom: 1.5rem;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+/* Role toggle */
+.role-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: #020617;
+  padding: 0.25rem;
+  border-radius: 999px;
+  border: 1px solid #1e293b;
+  margin-bottom: 1.5rem;
+}
+
+.role-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: transparent;
+  color: #e5e7eb;
+  transition: background 0.2s, color 0.2s;
+}
+
+.role-btn.active {
+  background: #22c55e;
+  color: #020617;
+}
+
+/* Form fields */
+.form-group {
+  margin-bottom: 0.9rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.required {
+  color: #f97316;
+}
+
+.form-group input {
+  width: 95%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  outline: none;
+}
+/* Textarea styling */
+.textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid #1e293b;
+  background: #020617;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  outline: none;
+  resize: vertical;
+}
+
+/* Submit button */
+.submit-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  background: #22c55e;
+  color: #020617;
+  transition: background 0.2s;
+}
+
+.submit-btn.loading {
+  background: #6b7280;
+  cursor: default;
+}
+
+/* Success message */
+.success-message {
+  margin-top: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: #022c22;
+  color: #bbf7d0;
+  font-size: 0.9rem;
+}
+
+/* Error message */
+.error-message {
+  margin-top: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: #450a0a;
+  color: #fecaca;
+  font-size: 0.9rem;
+}
