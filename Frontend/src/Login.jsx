@@ -40,9 +40,11 @@ function Login() {
 
       // Redirect to respective dashboard
       if (role === "owner") {
-        navigate("/owner-dashboard");
+        localStorage.setItem("userName", data.name);
+        navigate("/Car_Owner_Dashboard");
       } else {
-        navigate("/mechanic-dashboard");
+        localStorage.setItem("userName", data.name);
+        navigate("/Mechanic_Dashboard");
       }
     } catch (err) {
       setErrorMessage(err.message);
@@ -99,16 +101,16 @@ function Login() {
             {loading ? "Logging in..." : `Login as ${isOwner ? "Owner" : "Mechanic"}`}
           </button>
           <p>
-                            Don't have an account?{" "}
-                            <Link
-                                className="toggle-link"
-                                to="/"
-                                state={{ role: isOwner ? "owner" : "mechanic" }}
-                            >
-                                Sign Up
-                            </Link>{" "}
-                            as {isOwner ? "Car Owner" : "Mechanic"}
-                        </p>
+            Don't have an account?{" "}
+            <Link
+              className="toggle-link"
+              to="/"
+              state={{ role: isOwner ? "owner" : "mechanic" }}
+            >
+              Sign Up
+            </Link>{" "}
+            as {isOwner ? "Car Owner" : "Mechanic"}
+          </p>
 
           {errorMessage && <div className="error-message">{errorMessage}</div>}
         </form>

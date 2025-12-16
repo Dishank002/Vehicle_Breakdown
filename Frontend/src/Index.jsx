@@ -20,6 +20,10 @@ function Index() {
     const [mechPassword, setMechPassword] = useState("");
     const [mechGarageName, setMechGarageName] = useState("");
     const [mechGarageDescription, setMechGarageDescription] = useState("");
+    const [mechLocation, setMechLocation] = useState({
+        latitude: null,
+        longitude: null,
+    });
 
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
@@ -66,6 +70,10 @@ function Index() {
                 mobile: mechMobile,
                 email: mechEmail,
                 password: mechPassword,
+                garageName: mechGarageName,
+                garageDescription: mechGarageDescription,
+                latitude: mechLocation.latitude,
+                longitude: mechLocation.longitude,
             };
         }
 
@@ -244,6 +252,94 @@ function Index() {
                                     required
                                 />
                             </div>
+                            <div className="form-group">
+                                <label>Garage Location *</label>
+
+                                {/* Get Current Location */}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (navigator.geolocation) {
+                                            navigator.geolocation.getCurrentPosition(
+                                                (pos) => {
+                                                    setMechLocation({
+                                                        latitude: pos.coords.latitude,
+                                                        longitude: pos.coords.longitude,
+                                                    });
+                                                },
+                                                () => {
+                                                    alert("Unable to fetch location. Please allow location access.");
+                                                }
+                                            );
+                                        }
+                                    }}
+                                    className="location-btn"
+                                >
+                                    📍 Get Current Location
+                                </button>
+
+                                {/* Set Location on Map */}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        window.open("https://www.google.com/maps", "_blank");
+                                    }}
+                                    className="location-btn secondary"
+                                >
+                                    📌 Set Location on Map
+                                </button>
+
+                                <small className="hint">
+                                    Right-click on map → <b>What’s here?</b> → copy latitude & longitude
+                                </small>
+
+                                {/* Manual coordinate input */}
+                                <div className="manual-location">
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        placeholder="Latitude"
+                                        value={mechLocation.latitude || ""}
+                                        onChange={(e) =>
+                                            setMechLocation((prev) => ({
+                                                ...prev,
+                                                latitude: e.target.value,
+                                            }))
+                                        }
+                                        required
+                                    />
+
+                                    <input
+                                        type="number"
+                                        step="any"
+                                        placeholder="Longitude"
+                                        value={mechLocation.longitude || ""}
+                                        onChange={(e) =>
+                                            setMechLocation((prev) => ({
+                                                ...prev,
+                                                longitude: e.target.value,
+                                            }))
+                                        }
+                                        required
+                                    />
+                                </div>
+
+                                {/* Show on Map */}
+                                {mechLocation.latitude && mechLocation.longitude && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const mapUrl = `https://www.google.com/maps?q=${mechLocation.latitude},${mechLocation.longitude}`;
+                                            window.open(mapUrl, "_blank");
+                                        }}
+                                        className="map-btn"
+                                    >
+                                        🗺️ Show on Map
+                                    </button>
+                                )}
+                            </div>
+
+
                         </div>
                     )}
 
@@ -257,12 +353,12 @@ function Index() {
 
                     {successMessage && (
                         <div className="success-message">{successMessage} <Link
-                                className="toggle-link"
-                                to="/login"
-                                state={{ role: isOwner ? "owner" : "mechanic" }}
-                            >
-                                Login
-                            </Link> </div>
+                            className="toggle-link"
+                            to="/login"
+                            state={{ role: isOwner ? "owner" : "mechanic" }}
+                        >
+                            Login
+                        </Link> </div>
                     )}
                     {errorMessage && <div className="error-message">{errorMessage}</div>}
                 </form>
