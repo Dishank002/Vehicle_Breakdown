@@ -237,6 +237,7 @@ def get_mechanics():
         SELECT 
             MN_Name,
             MN_Garage_Name,
+                   
             Latitude,
             Longitude
         FROM mechanic

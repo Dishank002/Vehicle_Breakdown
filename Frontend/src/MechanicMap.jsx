@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { Tooltip } from "react-leaflet";
 
 // Fix marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -27,6 +28,15 @@ const getDistanceKm = (lat1, lon1, lat2, lon2) => {
   return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
 
+const redIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+  shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
 // AutoZoom component
 const AutoZoom = ({ userLocation }) => {
   const map = useMap();
@@ -78,18 +88,23 @@ const MechanicMap = () => {
     }
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setUserLocation({
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-        });
-        setShowLocationPrompt(false);
-      },
-      (err) => {
-        console.warn("Location denied", err);
-        setShowLocationPrompt(true);
-      }
-    );
+  (pos) => {
+    setUserLocation({
+      latitude: pos.coords.latitude,
+      longitude: pos.coords.longitude,
+    });
+  },
+  (err) => {
+    console.error(err);
+    setShowLocationPrompt(true);
+  },
+  {
+    enableHighAccuracy: true,
+    timeout: 20000,
+    maximumAge: 0,
+  }
+);
+
   };
 
   // Check permissions on load
@@ -162,21 +177,35 @@ const MechanicMap = () => {
 
         {/* User marker */}
         {userLocation && (
-          <Marker position={[userLocation.latitude, userLocation.longitude]}>
-            <Popup>You are here</Popup>
-          </Marker>
-        )}
+  <Marker
+    position={[userLocation.latitude, userLocation.longitude]}
+    icon={redIcon}
+  >
+    <Popup>You are here</Popup>
+  </Marker>
+)}
+
 
         {/* Mechanics */}
         {visibleMechanics.map((mech, index) => (
-          <Marker key={index} position={[mech.Latitude, mech.Longitude]}>
-            <Popup>
-              <strong>{mech.MN_Name}</strong>
-              <br />
-              {mech.MN_Garage_Name}
-            </Popup>
-          </Marker>
-        ))}
+  <Marker key={index} position={[mech.Latitude, mech.Longitude]}>
+    
+    {/* Always visible */}
+    <Tooltip permanent direction="top" offset={[0, -20]}>
+      <strong>{mech.MN_Garage_Name}</strong>
+    </Tooltip>
+
+    {/* On click */}
+    <Popup>
+      <strong>Name:</strong> {mech.MN_Name}
+      <br />
+      <strong>Garage:</strong> {mech.MN_Garage_Name}
+      <br />
+      <strong>Mobile:</strong> {mech.MN_Mobile_No}
+    </Popup>
+  </Marker>
+))}
+
       </MapContainer>
     </div>
   );
