@@ -5,6 +5,7 @@ import Car_Owner_Dashboard from "./Car_Owner_Dashboard";
 import Mechanic_Dashboard from "./Mechanic_Dashboard";
 import New_Request from "./New_Request";
 import DashboardLayout from "./DashboardLayout";
+import RequestStatusSidebar from "./RequestStatusSidebar";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/Car_Owner_Dashboard" element={<Car_Owner_Dashboard />} />
           <Route path="/New_Request" element={<New_Request />} />
         </Route>
+        <Route path="/RequestStatusSidebar" element={<RequestStatusSidebar />} />
       </Routes>
     </Router>
   );

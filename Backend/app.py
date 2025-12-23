@@ -198,22 +198,21 @@ def login():
     try:
         if role == "owner":
             cursor.execute(
-                "SELECT * FROM car_owner WHERE CO_Email=%s AND CO_Password=%s",
+                "SELECT Id_CO_Owner, CO_Name FROM car_owner WHERE CO_Email=%s AND CO_Password=%s",
                 (email, password)
             )
             user = cursor.fetchone()
-        # else:
-        #     return jsonify({"success": False, "error": "Invalid role"}), 400
-        
+
         elif role == "mechanic":
             cursor.execute(
-                "SELECT * FROM mechanic WHERE MN_Email=%s AND MN_Password=%s",
+                "SELECT Id_Mechanic, MN_Name FROM mechanic WHERE MN_Email=%s AND MN_Password=%s",
                 (email, password)
             )
             user = cursor.fetchone()
+
         else:
             return jsonify({"success": False, "error": "Invalid role"}), 400
-        
+
     except Exception as e:
         logger.error(e)
         return jsonify({"success": False, "error": str(e)}), 500
@@ -224,7 +223,22 @@ def login():
     if not user:
         return jsonify({"success": False, "error": "Invalid credentials"}), 401
 
-    return jsonify({"success": True, "name": user.get("CO_Name") or user.get("MN_Name")}), 200
+    # ✅ role-based response
+    if role == "owner":
+        return jsonify({
+            "success": True,
+            "role": "owner",
+            "id": user["Id_CO_Owner"],
+            "name": user["CO_Name"]
+        }), 200
+    else:
+        return jsonify({
+            "success": True,
+            "role": "mechanic",
+            "id": user["Id_Mechanic"],
+            "name": user["MN_Name"]
+        }), 200
+
 
 @app.route("/api/mechanics", methods=["GET"])
 def get_mechanics():
@@ -249,6 +263,58 @@ def get_mechanics():
     conn.close()
 
     return jsonify(mechanics), 200
+
+@app.route('/api/car-issues', methods=['POST'])
+def add_car_issue():
+    data = request.json
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+            INSERT INTO car_issues (Requester_Name, Requester_Mobile_No, Car_Model, Car_Issue,
+     Status, Id_Mechanic, Id_CO_Owner, Latitude, Longitude) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+    
+    values = (
+        data["requester_name"],
+        data["requester_mobile"],
+        data["car_model"],
+        data["car_issue"],
+        data["status"],
+        data["id_mechanic"],
+        data["id_co_owner"],
+        data["latitude"],
+        data["longitude"]
+    )
+    cursor.execute(query, values)
+    conn.commit()
+
+    return jsonify({"success": True, "message": "Car issue reported successfully."}), 201
+
+@app.route('/api/car-issues/<int:owner_id>', methods=['GET'])
+def get_car_issues(owner_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    query = """
+    SELECT 
+        CAST(TIME(Issue_Time) AS CHAR) AS issue_time,
+        Status
+    FROM car_issues
+    WHERE Id_CO_Owner = %s
+    ORDER BY Issue_Time DESC
+    LIMIT 1
+"""
+
+    cursor.execute(query, (owner_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if result:
+        return jsonify(result), 200
+    else:
+        return jsonify({"message": "No active requests."}), 200
 
 if __name__ == '__main__':
     test_db_connection()   # ✅ Run test here

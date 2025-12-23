@@ -1,0 +1,56 @@
+.sidebar {
+  position: fixed;
+  top: 130px;              /* below navbar + button */
+  right: -320px;
+  width: 300px;
+  height: calc(70% - 120px); /* full height minus top offset */
+  background: #0f172a;
+  color: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  border-radius: 10px;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: #0d6efd;
+  color: white;
+}
+
+.sidebar-header button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.sidebar-content {
+  padding: 20px;
+}
+.request-status-btn {
+  position: fixed;
+  top: 80px;           /* adjust based on navbar height */
+  right: 20px;
+  z-index: 999;
+  padding: 10px 16px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.request-status-btn:hover {
+  background-color: #0b5ed7;
+}

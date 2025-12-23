@@ -21,37 +21,43 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorMessage("");
+  e.preventDefault();
+  setLoading(true);
+  setErrorMessage("");
 
-    try {
-      const response = await fetch("http://127.0.0.1:5000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role, email, password }),
-      });
+  try {
+    const response = await fetch("http://127.0.0.1:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role, email, password }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Login failed");
-      }
-
-      // Redirect to respective dashboard
-      if (role === "owner") {
-        localStorage.setItem("userName", data.name);
-        navigate("/Car_Owner_Dashboard");
-      } else {
-        localStorage.setItem("userName", data.name);
-        navigate("/Mechanic_Dashboard");
-      }
-    } catch (err) {
-      setErrorMessage(err.message);
-    } finally {
-      setLoading(false);
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "Login failed");
     }
-  };
+
+    // ✅ Store common data
+    localStorage.setItem("userRole", data.role);
+    localStorage.setItem("userName", data.name);
+
+    // ✅ Store role-based ID
+    if (data.role === "owner") {
+      localStorage.setItem("ownerId", data.id);
+      navigate("/Car_Owner_Dashboard");
+    } else {
+      localStorage.setItem("mechanicId", data.id);
+      navigate("/Mechanic_Dashboard");
+    }
+
+  } catch (err) {
+    setErrorMessage(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="app-container">

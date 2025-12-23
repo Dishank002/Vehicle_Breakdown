@@ -67,6 +67,44 @@ const AutoZoom = ({ userLocation }) => {
   return null;
 };
 
+// ✅ RecenterControl component (kept in same file)
+const RecenterControl = ({ userLocation }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!userLocation) return;
+
+    const recenterControl = L.control({ position: "bottomleft" });
+
+    recenterControl.onAdd = function () {
+      const button = L.DomUtil.create("button", "recenter-btn");
+      button.innerHTML = "📍"; // You can replace with an icon
+      button.style.background = "#0f172a";
+      button.style.fontSize = "20px"
+      button.style.border = "2px solid gray";
+      button.style.borderRadius = "4px";
+      button.style.cursor = "pointer";
+      button.style.padding = "6px 10px";
+
+      L.DomEvent.on(button, "click", function () {
+        map.setView([userLocation.latitude, userLocation.longitude], 15, {
+          animate: true,
+        });
+      });
+
+      return button;
+    };
+
+    recenterControl.addTo(map);
+
+    return () => {
+      recenterControl.remove();
+    };
+  }, [map, userLocation]);
+
+  return null;
+};
+
 const MechanicMap = ({ userLocation }) => {
   const [mechanics, setMechanics] = useState([]);
 
@@ -95,9 +133,7 @@ const MechanicMap = ({ userLocation }) => {
 
         return { ...mech, distance };
       })
-      .filter(
-        (mech) => !userLocation || mech.distance <= 15
-      );
+      .filter((mech) => !userLocation || mech.distance <= 15);
   }, [mechanics, userLocation]);
 
   return (
@@ -111,15 +147,20 @@ const MechanicMap = ({ userLocation }) => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
+      {/* <TileLayer
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+        subdomains="abcd"
+        maxZoom={19}
+      /> */}
+      
       {userLocation && <AutoZoom userLocation={userLocation} />}
+      {userLocation && <RecenterControl userLocation={userLocation} />}
 
       {/* User marker */}
       {userLocation && (
         <Marker
-          position={[
-            userLocation.latitude,
-            userLocation.longitude,
-          ]}
+          position={[userLocation.latitude, userLocation.longitude]}
           icon={redIcon}
         >
           <Popup>You are here</Popup>
@@ -128,10 +169,7 @@ const MechanicMap = ({ userLocation }) => {
 
       {/* Mechanics */}
       {visibleMechanics.map((mech, index) => (
-        <Marker
-          key={index}
-          position={[mech.Latitude, mech.Longitude]}
-        >
+        <Marker key={index} position={[mech.Latitude, mech.Longitude]}>
           <Tooltip permanent direction="top" offset={[0, -20]}>
             <strong>{mech.MN_Garage_Name}</strong>
           </Tooltip>

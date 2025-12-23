@@ -3,11 +3,14 @@ import "./Car_Owner_Dashboard.css";
 import Logo from "./Images/Logo2.png";
 import { Link } from "react-router-dom";
 import MechanicMap from "./MechanicMap";
+import RequestStatusSidebar from "./RequestStatusSidebar";
 
 const Car_Owner_Dashboard = () => {
   const [userName, setUserName] = React.useState("");
   const [userLocation, setUserLocation] = React.useState(null);
   const [showLocationPrompt, setShowLocationPrompt] = React.useState(false);
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [requestData, setRequestData] = React.useState(null);
 
   React.useEffect(() => {
     const storedName = localStorage.getItem("userName");
@@ -37,6 +40,16 @@ const Car_Owner_Dashboard = () => {
       }
     );
   };
+
+  React.useEffect(() => {
+    const ownerId = localStorage.getItem("ownerId");
+    if (!ownerId) return;
+
+    fetch(`http://127.0.0.1:5000/api/car-issues/${ownerId}`)
+      .then(res => res.json())
+      .then(data => setRequestData(data))
+      .catch(err => console.error("Error fetching request status:", err));
+  }, []);
 
   // 🔹 Permission check
   React.useEffect(() => {
@@ -81,13 +94,28 @@ const Car_Owner_Dashboard = () => {
               Enable Location
             </button>
           )}
-
+          <Link to="#">
+            <button className="nav-button">Book Service</button>
+          </Link>
           <Link to="/New_Request">
             <button className="nav-button">New Request</button>
           </Link>
           <div>Welcome, {userName}</div>
         </div>
       </nav>
+      <button
+  className="request-status-btn"
+  onClick={() => setSidebarOpen(!sidebarOpen)}
+>
+  {sidebarOpen ? "Request Status >>" : "<< Request Status"}
+</button>
+
+
+<RequestStatusSidebar
+  isOpen={sidebarOpen}
+  onClose={() => setSidebarOpen(false)}
+  requestStatus={requestData}
+/>
 
       <MechanicMap userLocation={userLocation} />
     </>

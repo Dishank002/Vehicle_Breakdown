@@ -16,6 +16,9 @@ const DashboardLayout = () => {
         </div>
 
         <div className="nav-right">
+          <Link to="#">
+            <button className="nav-button">Book Service</button>
+          </Link>
           <Link to="/New_Request">
             <button className="nav-button">New Request</button>
           </Link>
